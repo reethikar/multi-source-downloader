@@ -12,5 +12,5 @@ But it can take a URL (`--url`) as an input and also an optional `--output` to s
 
 
 Running the program:
-- Provide your own URL: `./main --url="https://go.dev/dl/go1.20.2.windows-amd64.zip"`
-- Provide your own URL and desired output file path: `./main --url="https://go.dev/dl/go1.20.2.windows-amd64.zip" --output=downloads/windows-amd64-archive.zip`
+- Provide your own URL: `./main.go --url="https://go.dev/dl/go1.20.2.windows-amd64.zip"`
+- Provide your own URL and desired output file path: `./main.go --url="https://go.dev/dl/go1.20.2.windows-amd64.zip" --output=downloads/windows-amd64-archive.zip`
