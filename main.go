@@ -20,7 +20,7 @@ import (
 const defaultNumChunks = 10
 
 // confirmSupportAndFileChunkSize tests to see if "Accept-Ranges" is part of the HTTP Response header
-// If not HTTP Range requests are not supported, return server not supported error
+// If HTTP Range requests are not supported, return server not supported error
 // If supported, return the filesize and anticipated chunkSize
 func confirmSupportAndFileChunkSize(dwLink string) (int64, int64, error) {
 	// Set DisableCompression to true (default is false) 
@@ -54,6 +54,7 @@ func getDownloadFileName(dwLink string) string {
 }
 
 // getObjectRange obtains the range of bytes from rangeStart to rangeEnd from the server using the Range HTTP request header
+// returns the HTTP response
 func getObjectRange(dwLink string, rangeStart int64, rangeEnd int64) (http.Response, error) {
 	// Set DisableCompression manually to true, same reason as in confirmSupportAndFileChunkSize
 	tr := &http.Transport{
@@ -136,6 +137,9 @@ func main() {
 
 	if !isFlagPassed("output") {
 		resultFile = getDownloadFileName(dwLink)
+		if resultFile == "" {
+			log.Fatalln("Bad Input: No object to download")
+		}
 	}
 	file, err := os.OpenFile(resultFile, os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
