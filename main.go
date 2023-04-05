@@ -33,7 +33,7 @@ func confirmSupportAndFileChunkSize(dwLink string) (int64, int64, error) {
 		return 0, 0, errors.New("HTTP error: GET request failed")
 	}
 	acceptRanges := response.Header["Accept-Ranges"]
-	if len(acceptRanges) == 0 {
+	if acceptRanges[0] == "none" {
 		return 0, 0, errors.New("Server Error: Accept-Ranges Header does not exist in HTTP Response")
 	}
 	filesize, err := strconv.ParseInt(response.Header["Content-Length"][0], 10, 64)
