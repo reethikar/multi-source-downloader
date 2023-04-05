@@ -1,9 +1,11 @@
 package main
 
 import (
+	"crypto/sha256"
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -107,6 +109,17 @@ func writeChunks(response http.Response, fileToWrite *os.File, currChunk int64, 
 	}
 }
 
+// isFlagPassed checks if the input flag string was passed explicitly by user
+func isFlagPassed(name string) bool {
+	found := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == name {
+			found = true
+		}
+	})
+	return found
+}
+
 func main() {
 	// Get URL to download and desired output file name
 	var resultFile, dwLink string
@@ -120,18 +133,18 @@ func main() {
 		log.Fatalln("Fatal error in checking support for multi-source downloads: ", err)
 	}
 
-	if resultFile == "" {
+	if !isFlagPassed("output") {
 		resultFile = getDownloadFileName(dwLink)
 	}
 	file, err := os.OpenFile(resultFile, os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	defer file.Close()
 
 	var rangeStart, rangeEnd int64
 	var downloaderWg sync.WaitGroup
 	startTime := time.Now()
+	fmt.Println("Downloading ", resultFile, " in ", defaultNumChunks, " chunks...")
 	for i := int64(0); i < defaultNumChunks; i++ {
 		if i == defaultNumChunks-1 {
 			// For the last chunk, ensure rangeEnd is up to fileSize
@@ -153,4 +166,12 @@ func main() {
 	downloaderWg.Wait()
 	elapsed := time.Since(startTime)
 	fmt.Println("Time to download was: ", elapsed)
+	file.Close()
+	writtenFile, err := os.OpenFile(resultFile, os.O_RDONLY, 0666)
+	h := sha256.New()
+	if _, err := io.Copy(h, writtenFile); err != nil {
+		log.Fatal("Error while calculating SHA256 checksum: ", err)
+	}
+	fmt.Printf("SHA256 Checksum: %x\n", h.Sum(nil))
+
 }
