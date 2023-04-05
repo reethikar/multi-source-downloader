@@ -4,7 +4,7 @@ This program helps you download files in multiple chunks to help parallelize the
 The code checks for such support, and then follows up with requests for multiple different chunks in parallel and rearranges them locally to reconstitute the file.
 
 ## Build
-Build the program using `go build`
+Build the program using `go build main.go`
 
 ## Run 
 By default, the program downloads the recent golang binary release for linux (`https://go.dev/dl/go1.20.2.linux-amd64.tar.gz`).
