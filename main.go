@@ -123,7 +123,8 @@ func isFlagPassed(name string) bool {
 func main() {
 	// Get URL to download and desired output file name
 	var resultFile, dwLink string
-	flag.StringVar(&dwLink, "url", "https://go.dev/dl/go1.20.2.linux-amd64.tar.gz", "URL of the file to download (default: latest go release for linux as of 3/30/23)")
+	// SHA256 Checksum for https://go.dev/dl/go1.20.3.linux-amd64.tar.gz file from https://go.dev/dl/ is 979694c2c25c735755bf26f4f45e19e64e4811d661dd07b8c010f7a8e18adfca (4/5/23)
+	flag.StringVar(&dwLink, "url", "https://go.dev/dl/go1.20.3.linux-amd64.tar.gz", "URL of the file to download (default: latest go release for linux as of 4/5/23)")
 	flag.StringVar(&resultFile, "output", "", "Path and filename to save output file (default: current directory with filename obtained through the URL)")
 	flag.Parse()
 
