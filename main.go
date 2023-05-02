@@ -26,9 +26,9 @@ func confirmSupportAndFileChunkSize(dwLink string, defaultNumChunks uint) (int64
 		DisableCompression: true,
 	}
 	client := &http.Client{Transport: tr}
-	response, err := client.Get(dwLink)
+	response, err := client.Head(dwLink)
 	if err != nil {
-    	log.Fatalln(err)
+    		log.Println(err)
 		return 0, 0, errors.New("HTTP error: GET request failed")
 	}
 	acceptRanges := response.Header["Accept-Ranges"]
@@ -43,7 +43,8 @@ func confirmSupportAndFileChunkSize(dwLink string, defaultNumChunks uint) (int64
 func getDownloadFileName(dwLink string) string {
 	filename, err := url.Parse(dwLink)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
+		return ""
 	}
 	urlParts := strings.Split(filename.Path, "/")
 	filePart := strings.Split(urlParts[len(urlParts)-1], "?")
